@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('titre');
             $table->string('description');
-            $table->foreignId('podcast_id')->constrained('episodes')->onDelete('cascade');
+            $table->foreignId('podcast_id')->constrained('podcasts')->onDelete('cascade');
             $table->string('audio');
             $table->timestamps();
         });
