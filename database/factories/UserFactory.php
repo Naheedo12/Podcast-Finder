@@ -26,8 +26,6 @@ class UserFactory extends Factory
             'prenom' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-
-            // ✅ Works now since we declared $password
             'password' => static::$password ??= Hash::make('password'),
 
             // ✅ randomElement() must receive an array
