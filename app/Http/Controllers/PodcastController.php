@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Podcast;
 use App\Http\Requests\StorePodcastRequest;
 use App\Http\Requests\UpdatePodcastRequest;
+use App\Models\Podcast;
 
 class PodcastController extends Controller
 {
@@ -13,21 +13,20 @@ class PodcastController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Podcast::all());
+    }
+
+    public function show($id)
+    {
+        $podcast = Podcast::findOrFail($id);
+
+        return response()->json($podcast, 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorePodcastRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Podcast $podcast)
     {
         //
     }
