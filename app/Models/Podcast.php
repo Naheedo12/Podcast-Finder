@@ -16,6 +16,7 @@ class Podcast extends Model
         'categorie',
         'description',
         'image',
+        'user_id'
     ];
 
     public function user()

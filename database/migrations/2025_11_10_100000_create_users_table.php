@@ -22,6 +22,15 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+        
+        \App\Models\User::create([
+            'nom' => 'Salma',
+            'prenom' => 'ElQadi',
+            'email' => 'salma@gmail.com',
+            'password' => Hash::make('12345678'), 
+            'role' => 'administrateur', 
+        ]);
+
     }
 
     /**

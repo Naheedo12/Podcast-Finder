@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Podcast;
 
-
 class Episode extends Model
 {
     use HasFactory;
@@ -15,6 +14,7 @@ class Episode extends Model
         'titre',
         'description',
         'audio',
+        'podcast_id'
     ];
 
     public function podcast()
