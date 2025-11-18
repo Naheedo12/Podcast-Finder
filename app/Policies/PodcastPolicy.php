@@ -4,63 +4,35 @@ namespace App\Policies;
 
 use App\Models\Podcast;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PodcastPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    // Tous les utilisateurs peuvent voir les podcasts
+    public function viewAny(?User $user): bool
     {
-        return true; // Tous les utilisateurs authentifiés peuvent voir les podcasts
+        return true;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Podcast $podcast): bool
+    public function view(?User $user, Podcast $podcast): bool
     {
-        return true; // Tous les utilisateurs authentifiés peuvent voir un podcast
+        return true;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
+    // Seuls les animateurs et admins peuvent créer
     public function create(User $user): bool
     {
-        return in_array($user->role, ['administrateur', 'animateur']);
+        return $user->role === 'animateur' || $user->role === 'administrateur';
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+    // L'animateur propriétaire ou l'admin peuvent modifier
     public function update(User $user, Podcast $podcast): bool
     {
-        return $user->id === $podcast->user_id || $user->role === 'administrateur';
+        return $user->role === 'administrateur' || $user->id === $podcast->user_id;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
+    // L'animateur propriétaire ou l'admin peuvent supprimer
     public function delete(User $user, Podcast $podcast): bool
     {
-        return $user->id === $podcast->user_id || $user->role === 'administrateur';
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Podcast $podcast): bool
-    {
-        return $user->role === 'administrateur';
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Podcast $podcast): bool
-    {
-        return $user->role === 'administrateur';
+        return $user->role === 'administrateur' || $user->id === $podcast->user_id;
     }
 }

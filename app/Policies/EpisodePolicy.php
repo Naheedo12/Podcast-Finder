@@ -4,71 +4,41 @@ namespace App\Policies;
 
 use App\Models\Episode;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class EpisodePolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    // Tous les utilisateurs peuvent voir les épisodes
+    public function viewAny(?User $user): bool
     {
-        return true; // Tous les utilisateurs authentifiés peuvent voir les épisodes
+        return true;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Episode $episode): bool
+    public function view(?User $user, Episode $episode): bool
     {
-        return true; // Tous les utilisateurs authentifiés peuvent voir un épisode
+        return true;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
+    // Seuls les animateurs et admins peuvent créer
     public function create(User $user): bool
     {
-        return in_array($user->role, ['administrateur', 'animateur']);
+        return $user->role === 'animateur' || $user->role === 'administrateur';
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+    // L'animateur propriétaire du podcast ou l'admin peuvent modifier
     public function update(User $user, Episode $episode): bool
     {
-        // Vérifiez d'abord si le podcast existe
         if (!$episode->podcast) {
             return false;
         }
-        return $user->id === $episode->podcast->user_id || $user->role === 'administrateur';
+        return $user->role === 'administrateur' || $user->id === $episode->podcast->user_id;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
+    // L'animateur propriétaire du podcast ou l'admin peuvent supprimer
     public function delete(User $user, Episode $episode): bool
     {
-        // Vérifiez d'abord si le podcast existe
         if (!$episode->podcast) {
             return false;
         }
-        return $user->id === $episode->podcast->user_id || $user->role === 'administrateur';
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Episode $episode): bool
-    {
-        return $user->role === 'administrateur';
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Episode $episode): bool
-    {
-        return $user->role === 'administrateur';
+        return $user->role === 'administrateur' || $user->id === $episode->podcast->user_id;
     }
 }

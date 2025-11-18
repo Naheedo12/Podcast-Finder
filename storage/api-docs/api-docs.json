@@ -179,6 +179,675 @@
                 ]
             }
         },
+        "/api/podcasts/{podcast_id}/episodes": {
+            "get": {
+                "tags": [
+                    "Episodes"
+                ],
+                "summary": "Liste des épisodes d'un podcast",
+                "operationId": "c69fe57d6278ec456b66f447e361abc5",
+                "parameters": [
+                    {
+                        "name": "podcast_id",
+                        "in": "path",
+                        "description": "ID du podcast",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des épisodes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Episode"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Podcast introuvable"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Episodes"
+                ],
+                "summary": "Créer un épisode (Animateur propriétaire/Admin)",
+                "operationId": "b392de7d6ef50873e1819ac47e497ef3",
+                "parameters": [
+                    {
+                        "name": "podcast_id",
+                        "in": "path",
+                        "description": "ID du podcast",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "titre",
+                                    "description",
+                                    "audio",
+                                    "podcast_id"
+                                ],
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "example": "Episode 1 : Introduction"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Premier épisode de notre podcast"
+                                    },
+                                    "audio": {
+                                        "description": "Fichier audio de l'épisode",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "podcast_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Épisode créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Épisode créé avec succès"
+                                        },
+                                        "episode": {
+                                            "$ref": "#/components/schemas/Episode"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Non autorisé"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/episodes/{id}": {
+            "get": {
+                "tags": [
+                    "Episodes"
+                ],
+                "summary": "Afficher les détails d'un épisode",
+                "operationId": "682c9f0b582614c5d25814ad0a6659c0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'épisode",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de l'épisode avec podcast et animateur",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Episode"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Épisode introuvable"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/episodes/{episode}": {
+            "post": {
+                "tags": [
+                    "Episodes"
+                ],
+                "summary": "Modifier un épisode (Propriétaire/Admin)",
+                "operationId": "9c5b4442216af2932084ea1b1409a050",
+                "parameters": [
+                    {
+                        "name": "episode",
+                        "in": "path",
+                        "description": "ID de l'épisode",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "example": "Nouveau titre"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Nouvelle description"
+                                    },
+                                    "audio": {
+                                        "description": "Nouveau fichier audio",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Épisode modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Épisode modifié avec succès"
+                                        },
+                                        "episode": {
+                                            "$ref": "#/components/schemas/Episode"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Non autorisé"
+                    },
+                    "404": {
+                        "description": "Épisode introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Episodes"
+                ],
+                "summary": "Supprimer un épisode (Propriétaire/Admin)",
+                "operationId": "ff97c31771f1c073195c26d2f7c842c5",
+                "parameters": [
+                    {
+                        "name": "episode",
+                        "in": "path",
+                        "description": "ID de l'épisode",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Épisode supprimé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Épisode supprimé avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Non autorisé"
+                    },
+                    "404": {
+                        "description": "Épisode introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/search/episodes": {
+            "get": {
+                "tags": [
+                    "Episodes"
+                ],
+                "summary": "Rechercher des épisodes par titre",
+                "operationId": "e921391937b3b70f9d181d6ff87c6c9a",
+                "parameters": [
+                    {
+                        "name": "titre",
+                        "in": "query",
+                        "description": "Recherche par titre",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultats de recherche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Episode"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/podcasts": {
+            "get": {
+                "tags": [
+                    "Podcasts"
+                ],
+                "summary": "Liste de tous les podcasts",
+                "operationId": "28abe6e0a78fe6785659a51dde99679e",
+                "responses": {
+                    "200": {
+                        "description": "Liste des podcasts avec leurs animateurs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Podcast"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Podcasts"
+                ],
+                "summary": "Créer un nouveau podcast (Animateur/Admin)",
+                "operationId": "e8917ecbdaa178c760e0992b16b91fb1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "titre",
+                                    "categorie",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "example": "Mon Podcast Tech"
+                                    },
+                                    "categorie": {
+                                        "type": "string",
+                                        "example": "Technologie"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Un podcast sur les nouvelles technologies"
+                                    },
+                                    "image": {
+                                        "description": "Image du podcast",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Podcast créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Podcast créé avec succès"
+                                        },
+                                        "podcast": {
+                                            "$ref": "#/components/schemas/Podcast"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Non autorisé"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/podcasts/{id}": {
+            "get": {
+                "tags": [
+                    "Podcasts"
+                ],
+                "summary": "Afficher les détails d'un podcast",
+                "operationId": "9009d1f97f328b3e48f85075f935aa0f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du podcast",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du podcast avec animateur et épisodes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Podcast"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Podcast introuvable"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/podcasts/{podcast}": {
+            "post": {
+                "tags": [
+                    "Podcasts"
+                ],
+                "summary": "Modifier un podcast (Propriétaire/Admin)",
+                "operationId": "1cad7f5402a40c4c6061964bf481cfda",
+                "parameters": [
+                    {
+                        "name": "podcast",
+                        "in": "path",
+                        "description": "ID du podcast",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "titre": {
+                                        "type": "string",
+                                        "example": "Nouveau titre"
+                                    },
+                                    "categorie": {
+                                        "type": "string",
+                                        "example": "Science"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Nouvelle description"
+                                    },
+                                    "image": {
+                                        "description": "Nouvelle image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Podcast modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Podcast modifié avec succès"
+                                        },
+                                        "podcast": {
+                                            "$ref": "#/components/schemas/Podcast"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Non autorisé"
+                    },
+                    "404": {
+                        "description": "Podcast introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Podcasts"
+                ],
+                "summary": "Supprimer un podcast (Propriétaire/Admin)",
+                "operationId": "84662b60bf9c0a1e5a88b28864b5cd9e",
+                "parameters": [
+                    {
+                        "name": "podcast",
+                        "in": "path",
+                        "description": "ID du podcast",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Podcast supprimé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Podcast supprimé avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Non autorisé"
+                    },
+                    "404": {
+                        "description": "Podcast introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/search/podcasts": {
+            "get": {
+                "tags": [
+                    "Podcasts"
+                ],
+                "summary": "Rechercher des podcasts par titre ou catégorie",
+                "operationId": "e9527bf72df1357ce288daa65c55dafb",
+                "parameters": [
+                    {
+                        "name": "titre",
+                        "in": "query",
+                        "description": "Recherche par titre",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "categorie",
+                        "in": "query",
+                        "description": "Recherche par catégorie",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultats de recherche",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Podcast"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/hosts": {
             "get": {
                 "tags": [
@@ -444,6 +1113,108 @@
     },
     "components": {
         "schemas": {
+            "Episode": {
+                "title": "Episode",
+                "description": "Modèle d'épisode de podcast",
+                "required": [
+                    "titre",
+                    "description",
+                    "audio",
+                    "podcast_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "titre": {
+                        "type": "string",
+                        "example": "Episode 1 : Introduction"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Premier épisode de notre podcast"
+                    },
+                    "audio": {
+                        "type": "string",
+                        "example": "https://cloudinary.com/audio.mp3"
+                    },
+                    "podcast_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    },
+                    "podcast": {
+                        "$ref": "#/components/schemas/Podcast"
+                    }
+                },
+                "type": "object"
+            },
+            "Podcast": {
+                "title": "Podcast",
+                "description": "Modèle de podcast",
+                "required": [
+                    "titre",
+                    "categorie",
+                    "description"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "titre": {
+                        "type": "string",
+                        "example": "Mon Podcast Tech"
+                    },
+                    "categorie": {
+                        "type": "string",
+                        "example": "Technologie"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un podcast sur les nouvelles technologies"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://cloudinary.com/image.jpg"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T10:30:00Z"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "episodes": {
+                        "description": "Liste des épisodes du podcast",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Episode"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "User": {
                 "title": "User",
                 "required": [
@@ -491,6 +1262,14 @@
         {
             "name": "Auth",
             "description": "Endpoints pour l'inscription, connexion, déconnexion et réinitialisation de mot de passe"
+        },
+        {
+            "name": "Episodes",
+            "description": "Gestion des épisodes de podcast : CRUD, recherche"
+        },
+        {
+            "name": "Podcasts",
+            "description": "Gestion des podcasts : CRUD, recherche"
         },
         {
             "name": "Users",
