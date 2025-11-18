@@ -7,11 +7,9 @@ use App\Models\User;
 use App\Models\Podcast;
 use App\Models\Episode;
 use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class EpisodeTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_user_cannot_create_episode()
     {

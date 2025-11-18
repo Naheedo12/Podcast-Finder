@@ -269,29 +269,23 @@ class PodcastController extends Controller
      *     )
      * )
      */
-    public function search(Request $request)
-    {
-        $this->authorize('viewAny', Podcast::class);
+public function search(Request $request)
+{
+    $this->authorize('viewAny', Podcast::class);
 
-        $query = Podcast::with('user');
+    $query = Podcast::query();
 
-        if ($request->has('titre')) {
-            $query->where('titre', 'like', '%' . $request->titre . '%');
-        }
-
-        if ($request->has('categorie')) {
-            $query->where('categorie', 'like', '%' . $request->categorie . '%');
-        }
-
-        if ($request->has('animateur')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('nom', 'like', '%' . $request->animateur . '%')
-                  ->orWhere('prenom', 'like', '%' . $request->animateur . '%');
-            });
-        }
-
-        $podcasts = $query->get();
-
-        return response()->json($podcasts, 200);
+    if ($request->has('titre')) {
+        $query->where('titre', 'like', '%' . $request->titre . '%');
     }
+
+    if ($request->has('categorie')) {
+        $query->where('categorie', 'like', '%' . $request->categorie . '%');
+    }
+
+    $podcasts = $query->get();
+
+    return response()->json($podcasts, 200);
+}
+
 }

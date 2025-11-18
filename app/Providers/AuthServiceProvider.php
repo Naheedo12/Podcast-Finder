@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Podcast;
 use App\Models\Episode;
+use App\Policies\PodcastPolicy;
+use App\Policies\EpisodePolicy;
+use App\Policies\UserPolicy;
+
 
 class AuthServiceProvider extends ServiceProvider
 {

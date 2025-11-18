@@ -28,14 +28,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/podcasts', [PodcastController::class, 'index']);
     Route::get('/podcasts/{id}', [PodcastController::class, 'show']);
     Route::post('/podcasts', [PodcastController::class, 'store']);
-    Route::put('/podcasts/{podcast}', [PodcastController::class, 'update']);
+    Route::post('/podcasts/{podcast}', [PodcastController::class, 'update']);
     Route::delete('/podcasts/{podcast}', [PodcastController::class, 'destroy']);
 
     // Episodes routes
     Route::get('/podcasts/{podcast_id}/episodes', [EpisodeController::class, 'index']);
     Route::get('/episodes/{id}', [EpisodeController::class, 'show']);
     Route::post('/podcasts/{podcast_id}/episodes', [EpisodeController::class, 'store']);
-    Route::put('/episodes/{episode}', [EpisodeController::class, 'update']);
+    Route::post('/episodes/{episode}', [EpisodeController::class, 'update']);
     Route::delete('/episodes/{episode}', [EpisodeController::class, 'destroy']);
 
     // Hosts routes

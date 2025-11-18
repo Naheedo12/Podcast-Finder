@@ -1,23 +1,17 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Podcast Finder API",
-        "description": "Documentation de l'API Podcast Finder",
+        "title": "Auth API",
+        "description": "Documentation des endpoints d'authentification",
         "version": "1.0"
     },
-    "servers": [
-        {
-            "url": "http://localhost:8000",
-            "description": "Serveur local"
-        }
-    ],
     "paths": {
         "/api/register": {
             "post": {
                 "tags": [
-                    "Authentification"
+                    "Auth"
                 ],
-                "summary": "Créer un utilisateur",
+                "summary": "Créer un nouvel utilisateur",
                 "operationId": "8a56853624e025573120a09a4c75d468",
                 "requestBody": {
                     "required": true,
@@ -28,7 +22,8 @@
                                     "nom",
                                     "prenom",
                                     "email",
-                                    "password"
+                                    "password",
+                                    "password_confirmation"
                                 ],
                                 "properties": {
                                     "nom": {
@@ -41,10 +36,14 @@
                                     },
                                     "email": {
                                         "type": "string",
-                                        "format": "email",
-                                        "example": "jean@example.com"
+                                        "example": "jean.dupont@mail.com"
                                     },
                                     "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
                                         "type": "string",
                                         "format": "password",
                                         "example": "password123"
@@ -56,20 +55,8 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Utilisateur créé avec succès",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                    "200": {
+                        "description": "Inscription réussie"
                     },
                     "422": {
                         "description": "Validation échouée"
@@ -80,9 +67,9 @@
         "/api/login": {
             "post": {
                 "tags": [
-                    "Authentification"
+                    "Auth"
                 ],
-                "summary": "Authentification utilisateur",
+                "summary": "Connexion utilisateur",
                 "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
                 "requestBody": {
                     "required": true,
@@ -96,8 +83,7 @@
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "format": "email",
-                                        "example": "jean@example.com"
+                                        "example": "jean.dupont@mail.com"
                                     },
                                     "password": {
                                         "type": "string",
@@ -112,26 +98,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Connecté avec succès",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
-                                        },
-                                        "token": {
-                                            "type": "string",
-                                            "example": "1|afj2323fsSDFJS23"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Connexion réussie avec token"
                     },
                     "401": {
-                        "description": "Identifiants invalides"
+                        "description": "Email ou mot de passe incorrect"
                     }
                 }
             }
@@ -139,29 +109,67 @@
         "/api/logout": {
             "post": {
                 "tags": [
-                    "Authentification"
+                    "Auth"
                 ],
                 "summary": "Déconnexion utilisateur",
                 "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
                 "responses": {
                     "200": {
-                        "description": "Déconnecté avec succès",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Déconnecté avec succès"
-                                        }
+                        "description": "Déconnexion réussie"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/reset-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Réinitialiser le mot de passe",
+                "operationId": "00c0aad74830221c6da409a1355ec736",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "old_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "old_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "ancienpassword"
                                     },
-                                    "type": "object"
-                                }
+                                    "new_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "nouveaupassword123"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "nouveaupassword123"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mot de passe réinitialisé avec succès"
                     },
-                    "401": {
-                        "description": "Non authentifié"
+                    "400": {
+                        "description": "Ancien mot de passe incorrect"
                     }
                 },
                 "security": [
@@ -172,153 +180,10 @@
             }
         }
     },
-    "components": {
-        "schemas": {
-            "Episode": {
-                "title": "Episode",
-                "required": [
-                    "titre",
-                    "description",
-                    "audio",
-                    "podcast_id"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "titre": {
-                        "type": "string",
-                        "example": "Episode 1"
-                    },
-                    "description": {
-                        "type": "string",
-                        "example": "Description de l'episode"
-                    },
-                    "audio": {
-                        "type": "string",
-                        "example": "https://res.cloudinary.com/..."
-                    },
-                    "podcast_id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "type": "object"
-            },
-            "Podcast": {
-                "title": "Podcast",
-                "required": [
-                    "titre",
-                    "categorie",
-                    "description",
-                    "image",
-                    "user_id"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "titre": {
-                        "type": "string",
-                        "example": "Mon Podcast"
-                    },
-                    "categorie": {
-                        "type": "string",
-                        "example": "Technologie"
-                    },
-                    "description": {
-                        "type": "string",
-                        "example": "Un podcast sur la tech"
-                    },
-                    "image": {
-                        "type": "string",
-                        "example": "https://res.cloudinary.com/..."
-                    },
-                    "user_id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "type": "object"
-            },
-            "User": {
-                "title": "User",
-                "required": [
-                    "nom",
-                    "prenom",
-                    "email",
-                    "password",
-                    "role"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "nom": {
-                        "type": "string",
-                        "example": "Dupont"
-                    },
-                    "prenom": {
-                        "type": "string",
-                        "example": "Jean"
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "example": "jean@example.com"
-                    },
-                    "role": {
-                        "type": "string",
-                        "enum": [
-                            "user",
-                            "animateur",
-                            "admin"
-                        ],
-                        "example": "user"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "type": "object"
-            }
-        },
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
-            }
-        }
-    },
     "tags": [
         {
-            "name": "Authentification",
-            "description": "Authentification"
+            "name": "Auth",
+            "description": "Endpoints pour l'inscription, connexion, déconnexion et réinitialisation de mot de passe"
         }
     ]
 }
