@@ -261,6 +261,10 @@ class PodcastController extends Controller
             $query->where('categorie', 'like', '%'.$request->categorie.'%');
         }
 
+        if($request->has('description')){
+            $query->where('description', 'like', '%'.$request->description. '%' );
+        }
+
         $podcasts = $query->get();
 
         return response()->json($podcasts, 200);

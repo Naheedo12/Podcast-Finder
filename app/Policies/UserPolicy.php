@@ -35,4 +35,8 @@ class UserPolicy
     {
         return $user->role === 'administrateur';
     }
+    public function hello(User $user)
+    {
+        return $user->role === 'animateur';
+    }
 }
